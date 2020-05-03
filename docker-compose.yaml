@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  inkbird:
+    image: jshridha/inkbird
+    build: .
+    network_mode: host
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
+    environment:
+      - INKBIRD_MQTT_HOST=hass.local
+      - INKBIRD_ADDRESS=90:70:65:F7:8D:AD
