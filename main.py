@@ -25,10 +25,10 @@ if __name__ == "__main__":
             client.enable_battery()
             client.set_deg_f()
 
-            print("Starting Loop")
+            logger.debug("Starting Loop")
             while True:
                 if client.client.waitForNotifications(1.0):
                     continue
         except bluepy.btle.BTLEDisconnectError:
             time.sleep(5)
-            print(f"reconnecting to {address}")
+            logger.info(f"Reconnecting to {address}")
