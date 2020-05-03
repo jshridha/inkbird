@@ -40,7 +40,7 @@ class Delegate(btle.DefaultDelegate):
         temp = array.array("H")
         temp.fromstring(data)
         for probe, t in enumerate(temp):
-            self.sensors[probe].temperature = t
+            self.sensors[probe + 1].temperature = t
     
     def handleBattery(self, data):
         if data[0] != 36:
