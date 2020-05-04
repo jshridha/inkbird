@@ -9,7 +9,7 @@ This is designed to run on a raspberry pi, but it should work fine on any linux 
 ## Quick Start
 The easiest way to run this probject is to run the image from docker hub using docker-compose
 
-wget https://raw.githubusercontent.com/jshridha/inkbird/master/docker-compose.yml
+wget https://raw.githubusercontent.com/jshridha/inkbird/master/docker-compose.yaml
 
 You will need to modify the environmental variables
 * `INKBIRD_MQTT_HOST` is the MQTT server that home assistant uses
