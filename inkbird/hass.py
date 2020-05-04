@@ -32,8 +32,8 @@ class Sensor:
     @property
     def discovery_message(self):
         return {
-            "unit_of_measurement": "F",
-            "device_class": "temperature",
+            "unit_of_measurement": self.units(),
+            "device_class": self.device_class(),
             "value_template": self.value_template(),
             "state_topic": self.publish_topic(),
             "json_attributes_topic": self.publish_topic(),
@@ -87,7 +87,13 @@ class Probe(Sensor):
 
     def unique_id(self):
         return f"{super().unique_id()}_probe{self.probe}"
+
+    def device_class(self):
+        return "temperature"
     
+    def units(self):
+        return "F"
+
     def value_template(self):
         return "{{ value_json.temperature }}"
 
@@ -115,4 +121,48 @@ class Probe(Sensor):
         if self._temperature == temperature:
             return
         self._temperature = temperature
+        self.update()
+
+
+class Battery(Sensor):
+    def __init__(self, mac):
+        self._value = None
+        super().__init__(mac)
+
+    def build_message(self):
+        return {"value": self.value}
+
+    def discovery_topic(self):
+        return f"{super().discovery_topic()}/battery/config"
+
+    def publish_topic(self):
+        return f"{super().publish_topic()}/battery"
+
+    def name(self):
+        return f"{super().name()} Battery"
+
+    def unique_id(self):
+        return f"{super().unique_id()}_battery"
+    
+    def value_template(self):
+        return "{{ value_json.value }}"
+
+    def set_logger(self):
+        self.logger = logger.getChild("battery")
+
+    def device_class(self):
+        return "battery"
+    
+    def units(self):
+        return "%"
+    
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        if self._value == value:
+            return
+        self._value = value
         self.update()

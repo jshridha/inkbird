@@ -6,7 +6,7 @@ import logging
 import threading
 
 
-from .hass import Probe
+from .hass import Probe, Battery
 
 from bluepy import btle
 
@@ -37,6 +37,7 @@ class Delegate(btle.DefaultDelegate):
         super().__init__()
         self.address = address
         self.probes = key_dependent_dict(lambda x: Probe(self.address, x))
+        self._battery = None
 
     def handleNotification(self, cHandle, data):
         logger.debug(f"New Data: {(cHandle, data)}")
@@ -58,6 +59,13 @@ class Delegate(btle.DefaultDelegate):
         battery = int(battery/maxBattery*100)
         for probe, sensor in self.probes.items():
             sensor.battery = battery
+        self.battery.value = battery
+
+    @property
+    def battery(self):
+        if self._battery is None:
+            self._battery = Battery(self.address)
+        return self._battery
 
 class InkBirdClient:
     def __init__(self, address):
