@@ -36,7 +36,6 @@ steps:
 - bash: |
     buildx build \
       --platform linux/arm64/v8,linux/amd64,linux/arm/v6,linux/arm/v7,linux/386 \
-      -f docker/Dockerfile \
       --push \
       -t jshridha/inkbird:latest-dev \
       .
@@ -46,7 +45,6 @@ steps:
     TAG="$(git describe --tags)"
     buildx build \
       --platform linux/arm64/v8,linux/amd64,linux/arm/v6,linux/arm/v7,linux/386 \
-      -f docker/Dockerfile \
       --push \
       -t jshridha/inkbird:latest -t "jshridha/inkbird:$TAG" \
       .
