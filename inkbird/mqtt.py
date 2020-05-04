@@ -12,8 +12,14 @@ class MqttController:
 
         client = mqtt.Client(client_id="inkbird")
         client.will_set("inkbird/status", payload="offline", retain=True, qos=0)
+
+        def on_connect(client, userdata, flags, rc):
+            client.publish("inkbird/status", "online", retain=True, qos=0)
+
+        client.on_connect = on_connect
+
         client.connect(host=host, port=port)
-        client.publish("inkbird/status", "online", retain=True, qos=0)
+        client.loop_start()
 
         self.client = client
     
