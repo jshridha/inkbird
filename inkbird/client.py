@@ -3,6 +3,7 @@ import array
 from collections import deque
 import struct
 import logging
+import threading
 
 
 from .hass import Sensor
@@ -13,6 +14,14 @@ from . import const
 from collections import defaultdict
 
 logger = logging.getLogger("inkbird")
+
+class Timer(threading.Timer):
+    def run(self):
+        while not self.finished.is_set():
+            self.finished.wait(self.interval)
+            self.function(*self.args, **self.kwargs)
+
+        self.finished.set()
  
 class key_dependent_dict(defaultdict):
     def __init__(self,f_of_x):
@@ -69,7 +78,15 @@ class InkBirdClient:
         self.characteristics[4].write(const.REALTIME_DATA_ENABLE_MESSAGE, withResponse=True)
 
     def enable_battery(self):
-        self.characteristics[4].write(const.REQ_BATTERY_MESSAGE, withResponse=True)
+        timer = Timer(60.0, self.request_battery)
+        timer.start()
+
+    def request_battery(self):
+        logger.debug("Requesting battery")
+        try:
+            self.characteristics[4].write(const.REQ_BATTERY_MESSAGE, withResponse=True)
+        except btle.BTLEInternalError:
+            pass
 
     def set_deg_f(self):
         self.characteristics[4].write(const.UNITS_F_MESSAGE, withResponse=True)
