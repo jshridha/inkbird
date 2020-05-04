@@ -3,7 +3,6 @@ version: "3"
 services:
   inkbird:
     image: jshridha/inkbird
-    build: .
     network_mode: host
     cap_add:
       - SYS_ADMIN

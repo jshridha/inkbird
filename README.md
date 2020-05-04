@@ -7,7 +7,7 @@ This is designed to run on a raspberry pi, but it should work fine on any linux 
 
 
 ## Quick Start
-The easiest way to run this probject is to build the docker image using docker-compose.
+The easiest way to run this probject is to run the image from docker hub using docker-compose
 
 wget https://raw.githubusercontent.com/jshridha/inkbird/master/docker-compose.yml
 
