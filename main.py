@@ -14,11 +14,11 @@ logging.basicConfig(
 
 if __name__ == "__main__":
     address = os.environ.get("INKBIRD_ADDRESS")
+    client = InkBirdClient(address=address)
 
     while True:
         try:
             logger.info(f"Connecting to {address}")
-            client = InkBirdClient(address=address)
             client.connect()
             client.login()
             client.enable_data()
