@@ -6,7 +6,7 @@ import logging
 import threading
 
 
-from .hass import Sensor
+from .hass import Probe
 
 from bluepy import btle
 
@@ -36,7 +36,7 @@ class Delegate(btle.DefaultDelegate):
     def __init__(self, address):
         super().__init__()
         self.address = address
-        self.sensors = key_dependent_dict(lambda x: Sensor(self.address, x))
+        self.probes = key_dependent_dict(lambda x: Probe(self.address, x))
 
     def handleNotification(self, cHandle, data):
         logger.debug(f"New Data: {(cHandle, data)}")
@@ -49,14 +49,14 @@ class Delegate(btle.DefaultDelegate):
         temp = array.array("H")
         temp.fromstring(data)
         for probe, t in enumerate(temp):
-            self.sensors[probe + 1].temperature = t
+            self.probes[probe + 1].temperature = t
     
     def handleBattery(self, data):
         if data[0] != 36:
             return
         battery, maxBattery = struct.unpack("<HH", data[1:5])
         battery = int(battery/maxBattery*100)
-        for probe, sensor in self.sensors.items():
+        for probe, sensor in self.probes.items():
             sensor.battery = battery
 
 class InkBirdClient:

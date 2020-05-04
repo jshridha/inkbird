@@ -7,33 +7,38 @@ logger = logging.getLogger("inkbird")
 
 
 class Sensor:
-    def __init__(self, mac, probe):
+    def __init__(self, mac):
         self.mac = mac.lower().replace(':', '').replace("_", "")
-        self.probe = probe
-        self._temperature = "not_set"
-        self._battery = None
-        self.logger = logger.getChild(f"Probe{probe}")
+        self.set_logger()
         self.discover()
 
     def discover(self):
-        mqtt.publish(self.discovery_topic, json.dumps(self.discovery_message))
+        mqtt.publish(self.discovery_topic(), json.dumps(self.discovery_message))
 
     def update(self):
-        message = {"battery": self.battery, "temperature": self.temperature}
-        message = json.dumps(message)
-        mqtt.publish(self.publish_topic, message)
-        self.logger.info(f"Updating state with {message}")
+        mqtt.publish(self.publish_topic(), self.message)
+        self.logger.info(f"Updating state with {self.message}")
+
+    def set_logger(self):
+        self.logger = logger
+
+    def build_message(self):
+        return {}
+
+    @property
+    def message(self):
+        return json.dumps(self.build_message())
 
     @property
     def discovery_message(self):
         return {
             "unit_of_measurement": "F",
             "device_class": "temperature",
-            "value_template": "{{ value_json.temperature }}",
-            "state_topic": self.publish_topic,
-            "json_attributes_topic": self.publish_topic,
-            "name": f"Inkbird iBBQ Probe{self.probe}",
-            "unique_id": f"{self.mac}_{self.probe}",
+            "value_template": self.value_template(),
+            "state_topic": self.publish_topic(),
+            "json_attributes_topic": self.publish_topic(),
+            "name": self.name(),
+            "unique_id": self.unique_id(),
             "device": {
                 "identifiers": [f"inkbird_{self.mac.replace(':', '')}"],
                 "name": f"Inkbird BBQ Thermometer",
@@ -44,14 +49,51 @@ class Sensor:
             "availability_topic": "inkbird/status",
         }
     
-    @property
+    def name(self):
+        return "Inkbird iBBQ"
+
+    def unique_id(self):
+        return f"inkbird_{self.mac}"
+
+    def value_template(self):
+        return ""
+
     def publish_topic(self):
-        return f"inkbird/{self.mac}/{self.probe}"
+        return f"inkbird/{self.mac}"
 
-    @property
     def discovery_topic(self):
-        return f"homeassistant/sensor/{self.mac}/{self.probe}/config"
+        return f"homeassistant/sensor/{self.mac}"
 
+
+class Probe(Sensor):
+    def __init__(self, mac, probe):
+        self.probe = probe
+        self._temperature = "not_set"
+        self._battery = None
+
+        super().__init__(mac)
+
+    def build_message(self):
+        return {"temperature": self.temperature, "battery": self.battery}
+
+    def discovery_topic(self):
+        return f"{super().discovery_topic()}/Probe{self.probe}/config"
+
+    def publish_topic(self):
+        return f"{super().publish_topic()}/Probe{self.probe}"
+
+    def name(self):
+        return f"{super().name()} Probe {self.probe}"
+
+    def unique_id(self):
+        return f"{super().unique_id()}_probe{self.probe}"
+    
+    def value_template(self):
+        return "{{ value_json.temperature }}"
+
+    def set_logger(self):
+        self.logger = logger.getChild(f"Probe{self.probe}")
+    
     @property
     def temperature(self):
         return self._temperature
