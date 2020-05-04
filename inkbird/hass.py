@@ -10,7 +10,7 @@ class Sensor:
     def __init__(self, mac, probe):
         self.mac = mac.lower().replace(':', '').replace("_", "")
         self.probe = probe
-        self._temperature = None
+        self._temperature = "not_set"
         self._battery = None
         self.logger = logger.getChild(f"Probe{probe}")
         self.discover()
@@ -69,7 +69,7 @@ class Sensor:
 
     @temperature.setter
     def temperature(self, temperature):
-        temperature = temperature/10 * 9/5 + 32
+        temperature = temperature/10 * 9/5 + 32 if temperature > 0 else None
         if self._temperature == temperature:
             return
         self._temperature = temperature
