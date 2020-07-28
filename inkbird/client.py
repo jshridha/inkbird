@@ -1,3 +1,4 @@
+import os
 import asyncio
 import array
 from collections import deque
@@ -70,6 +71,7 @@ class Delegate(btle.DefaultDelegate):
 class InkBirdClient:
     def __init__(self, address):
         self.address = address
+        self.units = os.environ.get("INKBIRD_TEMP_UNITS", "f").lower()
 
     def connect(self):
         self.client = btle.Peripheral(self.address)
@@ -78,6 +80,10 @@ class InkBirdClient:
         self.client.setDelegate(Delegate(self.address))
         self.client.writeCharacteristic(self.characteristics[0].getHandle() + 1, b"\x01\x00", withResponse=True)
         self.client.writeCharacteristic(self.characteristics[3].getHandle() + 1, b"\x01\x00", withResponse=True)
+        if self.units == "c":
+            self.set_deg_c()
+        else:
+            self.set_deg_f()
 
     def login(self):
         self.characteristics[1].write(const.CREDENTIALS_MESSAGE, withResponse=True)
@@ -98,6 +104,9 @@ class InkBirdClient:
 
     def set_deg_f(self):
         self.characteristics[4].write(const.UNITS_F_MESSAGE, withResponse=True)
+
+    def set_deg_c(self):
+        self.characteristics[4].write(const.UNITS_C_MESSAGE, withResponse=True)
 
     def read_temperature(self):
         return self.service.peripheral.readCharacteristic(self.characteristics[3].handle)

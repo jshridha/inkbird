@@ -1,3 +1,4 @@
+import os
 import json
 from .mqtt import client as mqtt
 
@@ -32,7 +33,7 @@ class Sensor:
     @property
     def discovery_message(self):
         return {
-            "unit_of_measurement": self.units(),
+            "unit_of_measurement": self.units().upper(),
             "device_class": self.device_class(),
             "value_template": self.value_template(),
             "state_topic": self.publish_topic(),
@@ -70,6 +71,7 @@ class Probe(Sensor):
         self.probe = probe
         self._temperature = "not_set"
         self._battery = None
+        self._units = os.environ.get("INKBIRD_TEMP_UNITS", "f").lower()
 
         super().__init__(mac)
 
@@ -92,7 +94,7 @@ class Probe(Sensor):
         return "temperature"
     
     def units(self):
-        return "F"
+        return self._units
 
     def value_template(self):
         return "{{ value_json.temperature }}"
@@ -117,7 +119,10 @@ class Probe(Sensor):
 
     @temperature.setter
     def temperature(self, temperature):
-        temperature = temperature/10 * 9/5 + 32 if temperature > 0 else None
+        if self.units() == "c":
+            temperature = temperature/10 if temperature > 0 else None
+        else:
+            temperature = temperature/10 * 9/5 + 32 if temperature > 0 else None
         if self._temperature == temperature:
             return
         self._temperature = temperature
