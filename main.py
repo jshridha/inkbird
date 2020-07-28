@@ -26,8 +26,11 @@ if __name__ == "__main__":
 
             logger.debug("Starting Loop")
             while True:
-                if client.client.waitForNotifications(1.0):
-                    continue
+                try:
+                    if client.client.waitForNotifications(1.0):
+                        continue
+                except bluepy.btle.BTLEInternalError:
+                    pass
         except bluepy.btle.BTLEDisconnectError:
             time.sleep(5)
             logger.info(f"Reconnecting to {address}")
