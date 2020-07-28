@@ -9,6 +9,8 @@ class MqttController:
     def setup(self):
         host = os.environ.get("INKBIRD_MQTT_HOST")
         port = int(os.environ.get("INKBIRD_MQTT_PORT", 1883))
+        username = os.environ.get("INKBIRD_MQTT_USERNAME", "")
+        password = os.environ.get("INKBIRD_MQTT_PASSWORD", "")
 
         client = mqtt.Client(client_id="inkbird")
         client.will_set("inkbird/status", payload="offline", retain=True, qos=0)
@@ -18,6 +20,7 @@ class MqttController:
 
         client.on_connect = on_connect
 
+        client.username_pw_set(username, password)
         client.connect(host=host, port=port)
         client.loop_start()
 
