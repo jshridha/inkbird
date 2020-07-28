@@ -10,7 +10,7 @@ logger = logging.getLogger("inkbird")
 
 class Sensor:
     def __init__(self, mac):
-        self.mac = mac.lower().replace(':', '').replace("_", "")
+        self.mac = mac.lower().replace(":", "").replace("_", "")
         self.set_logger()
         self.discover()
 
@@ -50,7 +50,7 @@ class Sensor:
             },
             "availability_topic": "inkbird/status",
         }
-    
+
     def name(self):
         return "Inkbird iBBQ"
 
@@ -93,7 +93,7 @@ class Probe(Sensor):
 
     def device_class(self):
         return "temperature"
-    
+
     def units(self):
         return self._units
 
@@ -102,7 +102,7 @@ class Probe(Sensor):
 
     def set_logger(self):
         self.logger = logger.getChild(f"Probe{self.probe}")
-    
+
     @property
     def temperature(self):
         return self._temperature
@@ -121,9 +121,9 @@ class Probe(Sensor):
     @temperature.setter
     def temperature(self, temperature):
         if self.units() == "c":
-            temperature = temperature/10 if temperature > 0 else None
+            temperature = temperature / 10 if temperature > 0 else None
         else:
-            temperature = temperature/10 * 9/5 + 32 if temperature > 0 else None
+            temperature = temperature / 10 * 9 / 5 + 32 if temperature > 0 else None
         if self._temperature == temperature:
             return
         self._temperature = temperature
@@ -149,7 +149,7 @@ class Battery(Sensor):
 
     def unique_id(self):
         return f"{super().unique_id()}_battery"
-    
+
     def value_template(self):
         return "{{ value_json.value }}"
 
@@ -158,10 +158,10 @@ class Battery(Sensor):
 
     def device_class(self):
         return "battery"
-    
+
     def units(self):
         return "%"
-    
+
     @property
     def value(self):
         return self._value
