@@ -5,7 +5,7 @@ import os
 class MqttController:
     def __init__(self):
         self.setup()
-    
+
     def setup(self):
         host = os.environ.get("INKBIRD_MQTT_HOST")
         port = int(os.environ.get("INKBIRD_MQTT_PORT", 1883))
@@ -25,10 +25,11 @@ class MqttController:
         client.loop_start()
 
         self.client = client
-    
+
     def publish(self, topic, message):
         if not self.client.is_connected():
             self.setup()
         self.client.publish(topic, message)
+
 
 client = MqttController()

@@ -16,6 +16,7 @@ from collections import defaultdict
 
 logger = logging.getLogger("inkbird")
 
+
 class Timer(threading.Timer):
     def run(self):
         while not self.finished.is_set():
@@ -23,15 +24,18 @@ class Timer(threading.Timer):
             self.function(*self.args, **self.kwargs)
 
         self.finished.set()
- 
+
+
 class key_dependent_dict(defaultdict):
-    def __init__(self,f_of_x):
-        super().__init__(None) # base class doesn't get a factory
-        self.f_of_x = f_of_x # save f(x)
-    def __missing__(self, key): # called when a default needed
-        ret = self.f_of_x(key) # calculate default value
-        self[key] = ret # and install it in the dict
+    def __init__(self, f_of_x):
+        super().__init__(None)  # base class doesn't get a factory
+        self.f_of_x = f_of_x  # save f(x)
+
+    def __missing__(self, key):  # called when a default needed
+        ret = self.f_of_x(key)  # calculate default value
+        self[key] = ret  # and install it in the dict
         return ret
+
 
 class Delegate(btle.DefaultDelegate):
     def __init__(self, address):
@@ -46,18 +50,18 @@ class Delegate(btle.DefaultDelegate):
             self.handleTemperature(data)
         if cHandle == 37:
             self.handleBattery(data)
-    
+
     def handleTemperature(self, data):
         temp = array.array("H")
         temp.fromstring(data)
         for probe, t in enumerate(temp):
             self.probes[probe + 1].temperature = t
-    
+
     def handleBattery(self, data):
         if data[0] != 36:
             return
         battery, maxBattery = struct.unpack("<HH", data[1:5])
-        battery = int(battery/maxBattery*100)
+        battery = int(battery / maxBattery * 100)
         for probe, sensor in self.probes.items():
             sensor.battery = battery
         self.battery.value = battery
@@ -67,6 +71,7 @@ class Delegate(btle.DefaultDelegate):
         if self._battery is None:
             self._battery = Battery(self.address)
         return self._battery
+
 
 class InkBirdClient:
     def __init__(self, address):
@@ -78,8 +83,12 @@ class InkBirdClient:
         self.service = self.client.getServiceByUUID("FFF0")
         self.characteristics = self.service.getCharacteristics()
         self.client.setDelegate(Delegate(self.address))
-        self.client.writeCharacteristic(self.characteristics[0].getHandle() + 1, b"\x01\x00", withResponse=True)
-        self.client.writeCharacteristic(self.characteristics[3].getHandle() + 1, b"\x01\x00", withResponse=True)
+        self.client.writeCharacteristic(
+            self.characteristics[0].getHandle() + 1, b"\x01\x00", withResponse=True
+        )
+        self.client.writeCharacteristic(
+            self.characteristics[3].getHandle() + 1, b"\x01\x00", withResponse=True
+        )
 
     def login(self):
         self.characteristics[1].write(const.CREDENTIALS_MESSAGE, withResponse=True)
@@ -89,7 +98,9 @@ class InkBirdClient:
             self.set_deg_c()
         else:
             self.set_deg_f()
-        self.characteristics[4].write(const.REALTIME_DATA_ENABLE_MESSAGE, withResponse=True)
+        self.characteristics[4].write(
+            const.REALTIME_DATA_ENABLE_MESSAGE, withResponse=True
+        )
 
     def enable_battery(self):
         timer = Timer(300.0, self.request_battery)
@@ -109,4 +120,6 @@ class InkBirdClient:
         self.characteristics[4].write(const.UNITS_C_MESSAGE, withResponse=True)
 
     def read_temperature(self):
-        return self.service.peripheral.readCharacteristic(self.characteristics[3].handle)
+        return self.service.peripheral.readCharacteristic(
+            self.characteristics[3].handle
+        )
