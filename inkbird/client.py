@@ -80,15 +80,15 @@ class InkBirdClient:
         self.client.setDelegate(Delegate(self.address))
         self.client.writeCharacteristic(self.characteristics[0].getHandle() + 1, b"\x01\x00", withResponse=True)
         self.client.writeCharacteristic(self.characteristics[3].getHandle() + 1, b"\x01\x00", withResponse=True)
-        if self.units == "c":
-            self.set_deg_c()
-        else:
-            self.set_deg_f()
 
     def login(self):
         self.characteristics[1].write(const.CREDENTIALS_MESSAGE, withResponse=True)
 
     def enable_data(self):
+        if self.units == "c":
+            self.set_deg_c()
+        else:
+            self.set_deg_f()
         self.characteristics[4].write(const.REALTIME_DATA_ENABLE_MESSAGE, withResponse=True)
 
     def enable_battery(self):
