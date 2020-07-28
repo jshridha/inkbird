@@ -99,7 +99,7 @@ class InkBirdClient:
         logger.debug("Requesting battery")
         try:
             self.characteristics[4].write(const.REQ_BATTERY_MESSAGE, withResponse=True)
-        except btle.BTLEInternalError:
+        except (btle.BTLEInternalError, btle.BTLEDisconnectError):
             pass
 
     def set_deg_f(self):
