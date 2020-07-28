@@ -3,6 +3,7 @@ import json
 from .mqtt import client as mqtt
 
 import logging
+from inkbird.version import version
 
 logger = logging.getLogger("inkbird")
 
@@ -43,7 +44,7 @@ class Sensor:
             "device": {
                 "identifiers": [f"inkbird_{self.mac.replace(':', '')}"],
                 "name": f"Inkbird BBQ Thermometer",
-                "sw_version": "0.1.0",
+                "sw_version": version,
                 "model": "Inkbird Smart BBQ Thermometer",
                 "manufacturer": "Inkbird",
             },
