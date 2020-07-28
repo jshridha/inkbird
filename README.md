@@ -12,7 +12,11 @@ The easiest way to run this probject is to run the image from docker hub using d
 wget https://raw.githubusercontent.com/jshridha/inkbird/master/docker-compose.yaml
 
 You will need to modify the environmental variables
-* `INKBIRD_MQTT_HOST` is the MQTT server that home assistant uses
-* `INKBIRD_ADDRESS` is the bluetooth address for the inkbird
+| Variable | Required (Y/N) | Description |
+|----------|----------------|-------------|
+| `INKBIRD_MQTT_HOST` | Y | MQTT server that home assistant uses
+| `INKBIRD_ADDRESS` | Y | The bluetooth address for the inkbird
+| `INKBIRD_MQTT_USERNAME` | N | MQTT username
+| `INKBIRD_MQTT_PASSWORD` | N | MQTT password
 
 Then just run `docker-compose up -d`
