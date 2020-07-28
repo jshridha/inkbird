@@ -92,7 +92,7 @@ class InkBirdClient:
         self.characteristics[4].write(const.REALTIME_DATA_ENABLE_MESSAGE, withResponse=True)
 
     def enable_battery(self):
-        timer = Timer(60.0, self.request_battery)
+        timer = Timer(300.0, self.request_battery)
         timer.start()
 
     def request_battery(self):
