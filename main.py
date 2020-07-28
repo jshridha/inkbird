@@ -12,6 +12,10 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
 )
 
+MAX_BACKOFF = 60
+BACKOFF = 1
+INITIAL_BACKOFF = 1
+
 if __name__ == "__main__":
     address = os.environ.get("INKBIRD_ADDRESS")
     client = InkBirdClient(address=address)
@@ -25,6 +29,7 @@ if __name__ == "__main__":
             client.enable_battery()
 
             logger.debug("Starting Loop")
+            BACKOFF = INITIAL_BACKOFF
             while True:
                 try:
                     if client.client.waitForNotifications(1.0):
@@ -32,5 +37,6 @@ if __name__ == "__main__":
                 except bluepy.btle.BTLEInternalError:
                     pass
         except bluepy.btle.BTLEDisconnectError:
-            time.sleep(5)
+            time.sleep(min(BACKOFF, MAX_BACKOFF))
+            BACKOFF *= 2
             logger.info(f"Reconnecting to {address}")
