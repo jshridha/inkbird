@@ -18,5 +18,6 @@ You will need to modify the environmental variables
 | `INKBIRD_ADDRESS` | Y | The bluetooth address for the inkbird
 | `INKBIRD_MQTT_USERNAME` | N | MQTT username
 | `INKBIRD_MQTT_PASSWORD` | N | MQTT password
+| `INKBIRD_TEMP_UNITS` | N | Set to `F` for farenheit and `C` for celsius (defaults to `F`)
 
 Then just run `docker-compose up -d`
