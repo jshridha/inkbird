@@ -59,17 +59,13 @@ class Delegate(btle.DefaultDelegate):
 
     def __batteryPercentage(self, current, max):
         factor = max / 6550.0
-        length = len(const.BATTERY_CORRECTION)
-
-        if (current > const.BATTERY_CORRECTION[length - 1] * factor):
+        current /= factor
+        if current > const.BATTERY_CORRECTION[-1]:
             return 100
-        if (current <= const.BATTERY_CORRECTION[0] * factor):
+        if current <= const.BATTERY_CORRECTION[0]:
             return 0
         for idx, voltage in enumerate(const.BATTERY_CORRECTION, start=0):
-            if idx == length:
-                return 100
-            if (current > (const.BATTERY_CORRECTION[idx] * factor)) and \
-                        (current <= (const.BATTERY_CORRECTION[idx+1] * factor)):
+            if (current > voltage) and (current <= (const.BATTERY_CORRECTION[idx + 1])):
                 return idx + 1
         return 100
 
