@@ -57,11 +57,23 @@ class Delegate(btle.DefaultDelegate):
         for probe, t in enumerate(temp):
             self.probes[probe + 1].temperature = t
 
+    def __batteryPercentage(self, current, max):
+        factor = max / 6550.0
+        current /= factor
+        if current > const.BATTERY_CORRECTION[-1]:
+            return 100
+        if current <= const.BATTERY_CORRECTION[0]:
+            return 0
+        for idx, voltage in enumerate(const.BATTERY_CORRECTION, start=0):
+            if (current > voltage) and (current <= (const.BATTERY_CORRECTION[idx + 1])):
+                return idx + 1
+        return 100
+
     def handleBattery(self, data):
         if data[0] != 36:
             return
         battery, maxBattery = struct.unpack("<HH", data[1:5])
-        battery = int(battery / maxBattery * 100)
+        battery = self.__batteryPercentage(battery, maxBattery)
         for probe, sensor in self.probes.items():
             sensor.battery = battery
         self.battery.value = battery
