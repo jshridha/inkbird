@@ -41,7 +41,7 @@ class Delegate(btle.DefaultDelegate):
     def __init__(self, address):
         super().__init__()
         self.address = address
-        self.probes = key_dependent_dict(lambda x: Probe(self.address, x))
+        self.probes = key_dependent_dict(lambda x: Probe(self.address, x, self.battery.value))
         self._battery = None
 
     def handleNotification(self, cHandle, data):
@@ -115,6 +115,7 @@ class InkBirdClient:
         )
 
     def enable_battery(self):
+        self.request_battery()
         timer = Timer(300.0, self.request_battery)
         timer.start()
 

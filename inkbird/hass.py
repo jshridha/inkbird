@@ -68,10 +68,10 @@ class Sensor:
 
 
 class Probe(Sensor):
-    def __init__(self, mac, probe):
+    def __init__(self, mac, probe, battery=None):
         self.probe = probe
         self._temperature = "not_set"
-        self._battery = None
+        self._battery = battery
         self._units = os.environ.get("INKBIRD_TEMP_UNITS", "f").lower()
 
         super().__init__(mac)
