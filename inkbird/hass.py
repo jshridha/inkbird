@@ -121,9 +121,9 @@ class Probe(Sensor):
     @temperature.setter
     def temperature(self, temperature):
         if self.units() == "c":
-            temperature = temperature / 10 if temperature > 0 else None
+            temperature = temperature / 10 if temperature >= 0 and temperature < 10000 else None
         else:
-            temperature = temperature / 10 * 9 / 5 + 32 if temperature > 0 else None
+            temperature = temperature / 10 * 9 / 5 + 32 if temperature >= 0 and temperature < 10000 else None
         if self._temperature == temperature:
             return
         self._temperature = temperature
