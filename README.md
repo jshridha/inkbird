@@ -1,5 +1,5 @@
 # Inkbird to Homeassistant
-## The purpose of this project is to get popular multi-probe inkbird thermometers into homeassistant for automations, temperature logging, changing lights baded on BBQ status, and whatever else you can think of.
+## The purpose of this project is to get popular multi-probe inkbird thermometers into homeassistant for automations, temperature logging, changing lights based on BBQ status, and whatever else you can think of.
 
 ## Requirements
 
