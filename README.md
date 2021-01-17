@@ -1,17 +1,26 @@
 # Inkbird to Homeassistant
-## The purpose of this project is to get popular multi-probe inkbird thermometers into homeassistant for automations, temperature logging, and general awesomeness.
+## The purpose of this project is to get popular multi-probe inkbird thermometers into homeassistant for automations, temperature logging, changing lights based on BBQ status, and whatever else you can think of.
 
 ## Requirements
 
-This is designed to run on a raspberry pi, but it should work fine on any linux system with a BLE adapter. It should even run on a raspberry pi zero w.
+- Linux System with Bleutooth enabled
+- Python/Python3 with python pip
+- Docker with docker-composed
 
+## Setting up the host:
+
+- `apt update && apt dist-upgrade`
+- `curl -fsSL https://get.docker.com -o get-docker.sh`
+- `sh get-docker.sh`
+- `apt install docker-compose python-pip`
 
 ## Quick Start
 The easiest way to run this probject is to run the image from docker hub using docker-compose
 
-wget https://raw.githubusercontent.com/jshridha/inkbird/master/docker-compose.yaml
+`wget https://github.com/DhrSoulslayer/inkbird/blob/dev/docker-compose.yaml`
 
-You will need to modify the environmental variables
+You will need to modify the environmental variables so open docker-compose.yaml with your favorite editor and adjust the settings were needed.
+
 | Variable | Required (Y/N) | Description |
 |----------|----------------|-------------|
 | `INKBIRD_MQTT_HOST` | Y | MQTT server that home assistant uses
