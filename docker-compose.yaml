@@ -2,6 +2,7 @@ version: "3"
 
 services:
   inkbird:
+    restart: unless-stopped
     image: jshridha/inkbird:1.1.1
     network_mode: host
     cap_add:
@@ -12,3 +13,4 @@ services:
       - INKBIRD_MQTT_USERNAME=inkbird
       - INKBIRD_MQTT_PASSWORD=mqttpassword
       - INKBIRD_ADDRESS=90:70:65:F7:8D:AD
+      - INKBIRD_TEMP_UNITS=c
