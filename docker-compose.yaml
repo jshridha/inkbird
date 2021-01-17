@@ -2,6 +2,7 @@ version: "3"
 
 services:
   inkbird:
+    restart: unless-stopped
     image: jshridha/inkbird:1.1.1
     network_mode: host
     cap_add:
