@@ -3,6 +3,7 @@ version: "3"
 services:
   inkbird:
     restart: unless-stopped
+    container_name: inkbird2mqtt
     image: jshridha/inkbird:1.1.1
     network_mode: host
     cap_add:
