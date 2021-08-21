@@ -26,10 +26,10 @@ class MqttController:
 
         self.client = client
 
-    def publish(self, topic, message, retain=False):
+    def publish(self, topic, message, retainMessage=False):
         if not self.client.is_connected():
             self.setup()
-        self.client.publish(topic, message, retain=retain)
+        self.client.publish(topic, message, retain=retainMessage)
 
 
 client = MqttController()
