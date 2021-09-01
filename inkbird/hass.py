@@ -15,7 +15,7 @@ class Sensor:
         self.discover()
 
     def discover(self):
-        mqtt.publish(self.discovery_topic(), json.dumps(self.discovery_message))
+        mqtt.publish(self.discovery_topic(), json.dumps(self.discovery_message), True)
 
     def update(self):
         mqtt.publish(self.publish_topic(), self.message)
