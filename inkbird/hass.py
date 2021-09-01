@@ -15,7 +15,7 @@ class Sensor:
         self.discover()
 
     def discover(self):
-        mqtt.publish(self.discovery_topic(), json.dumps(self.discovery_message))
+        mqtt.publish(self.discovery_topic(), json.dumps(self.discovery_message), True)
 
     def update(self):
         mqtt.publish(self.publish_topic(), self.message)
@@ -121,9 +121,9 @@ class Probe(Sensor):
     @temperature.setter
     def temperature(self, temperature):
         if self.units() == "c":
-            temperature = temperature / 10 if temperature > 0 else None
+            temperature = temperature / 10 if temperature >= 0 and temperature < 10000 else None
         else:
-            temperature = temperature / 10 * 9 / 5 + 32 if temperature > 0 else None
+            temperature = temperature / 10 * 9 / 5 + 32 if temperature >= 0 and temperature < 10000 else None
         if self._temperature == temperature:
             return
         self._temperature = temperature

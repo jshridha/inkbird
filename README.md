@@ -1,9 +1,9 @@
 # Inkbird to Homeassistant
-## The purpose of this project is to get popular multi-probe inkbird thermometers into homeassistant for automations, temperature logging, and general awesomeness.
+## The purpose of this project is to get popular multi-probe inkbird thermometers into homeassistant for automations, temperature logging, changing lights based on BBQ status, and whatever else you can think of.
 
 ## Requirements
 
-This is designed to run on a raspberry pi, but it should work fine on any linux system with a BLE adapter. It should even run on a raspberry pi zero w.
+This is designed to run on a raspberry pi, but it should work fine on any linux system with a BLE adapter.
 
 
 ## Quick Start
